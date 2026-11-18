@@ -131,7 +131,8 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .stack{display:grid;grid-template-columns:repeat(2,auto);gap:8px;position:relative;z-index:1;justify-content:end}
 .stack span{font:500 12px var(--mono);padding:8px 12px;border-radius:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:7px;white-space:nowrap}
 .stack .plus{background:none;border:0;padding:8px 0;color:var(--green)}
-@media (max-width:700px){.promo{grid-template-columns:1fr;padding:22px 18px}.stack{display:flex;flex-wrap:wrap;justify-content:start}}
+.promo>*{min-width:0;position:relative;z-index:1}
+@media (max-width:700px){.promo{grid-template-columns:minmax(0,1fr);padding:22px 18px}.promo::after{right:-90px;top:-90px}.gh{font-size:12px;gap:8px;padding:9px 11px 9px 10px}.stack{display:flex;flex-wrap:wrap;justify-content:start}}
 
 /* View tabs */
 .tabs{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
@@ -143,6 +144,12 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .tabbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .tabbar .tabs{margin-top:0}
 .cfg{position:relative;margin-left:auto;z-index:20}
+@media (max-width:560px){
+  .tabbar{flex-wrap:nowrap;gap:6px}
+  .tabbar .tabs{flex:1 1 auto;min-width:0;flex-wrap:nowrap;gap:3px}
+  .tabs a{flex:1 1 auto;text-align:center;white-space:nowrap;font-size:12.5px;padding:8px 5px}
+}
+@media (max-width:350px){.tabs a{font-size:11.5px;padding:8px 3px}}
 .cfg-btn{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--display);color:var(--on-navy-muted);background:transparent;padding:7px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.14);cursor:pointer}
 .cfg-btn svg{width:20px;height:20px;display:block;flex:none}
 .cfg-btn:hover,.cfg-btn[aria-expanded="true"]{color:var(--on-navy);border-color:rgba(255,255,255,.4)}
