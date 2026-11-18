@@ -262,6 +262,12 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
   .row .plan .name{white-space:normal;overflow:visible;align-items:baseline}
 }
 @media (max-width:350px){.gh{font-size:10.5px;gap:6px;padding-inline:8px}}
+/* Phone: a changed setting shows as a dot on the gear, not a text label that widens the row */
+@media (max-width:560px){
+  .cfg{flex:none}.cfg-btn{position:relative}
+  .cfg-note{position:absolute;top:-4px;right:-4px;font-size:0;gap:0}
+  .cfg-note::before{width:10px;height:10px;box-shadow:0 0 0 2px var(--navy)}
+}
 </style>
 </head>
 <body>
