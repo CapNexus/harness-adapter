@@ -20,7 +20,7 @@
   --bg:#f3f5f7; --surface:#ffffff; --surface-2:#f8fafc; --fg:#1d2733; --muted:#5f6b78; --faint:#8a96a3; --rule:#e3e8ee;
   --navy:#0c2841; --navy-2:#123659; --on-navy:#ffffff; --on-navy-muted:#b9c8d8;
   --accent:#2478c2; --accent-soft:#e5f0fa; --on-accent:#ffffff; --track:#edf1f5; --green:#92d050;
-  --anth:#2478c2; --oai:#0c2841; --cog:#8c9aab; --kiro:#7cbf3a;
+  --anth:#2478c2; --oai:#0c2841; --cog:#8c9aab; --kiro:#7cbf3a; --ow:#c2831a;
   --shadow:0 1px 2px rgba(12,40,65,.06),0 8px 28px rgba(12,40,65,.08);
   --x-hi-bg:#92d050; --x-hi-fg:#0c2841;
   --display:Roboto,"Helvetica Neue",Arial,sans-serif; --mono:"Roboto Mono",ui-monospace,Menlo,monospace;
@@ -29,13 +29,13 @@
   --bg:#07182a; --surface:#0d243b; --surface-2:#102a44; --fg:#e8eef4; --muted:#a3b4c6; --faint:#7389a0; --rule:#1b3753;
   --navy:#04111e; --navy-2:#0a2036; --on-navy-muted:#9fb2c6;
   --accent:#62a8ea; --accent-soft:#163a5e; --on-accent:#04111e; --track:#14304c;
-  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050;
+  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050; --ow:#e6b455;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#07182a; --surface:#0d243b; --surface-2:#102a44; --fg:#e8eef4; --muted:#a3b4c6; --faint:#7389a0; --rule:#1b3753;
   --navy:#04111e; --navy-2:#0a2036; --on-navy-muted:#9fb2c6;
   --accent:#62a8ea; --accent-soft:#163a5e; --on-accent:#04111e; --track:#14304c;
-  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050;
+  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050; --ow:#e6b455;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}
 
 *,*::before,*::after{box-sizing:border-box}
@@ -192,6 +192,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .mrow .track{grid-column:1/-1;height:10px}
 .mrow.focus .lbl{font-weight:700}
 .mrow.dim{opacity:.55}
+#mvOw button{flex:1 1 0}
 @media (max-width:760px){.panels{grid-template-columns:1fr}.panel+.panel{border-left:0;border-top:1px solid var(--rule)}}
 
 /* In-plan value view */
@@ -274,7 +275,7 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
 
 <header class="mast gutter"><div class="inner">
   <div class="eyebrow">AI coding plan value index · Updated as new models release · As of <time datetime="2026-11-18">November 18, 2026</time></div>
-  <h1>What your coding plan is <strong>worth at API prices</strong></h1>
+  <h1 id="headline">What your coding plan is <strong>worth at API prices</strong></h1>
   <div class="tabbar">
     <nav class="tabs" aria-label="Views"><a href="#plans" data-v="plans">Plan value</a><a href="#models" data-v="models">Model throughput</a><a href="#games" data-v="games">In-plan value</a></nav>
     <div class="cfg" id="cfg">
@@ -357,7 +358,11 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
         </div></div>
       <div class="ctl"><label class="eyebrow" for="mvHaiku">Haiku prompt size</label>
         <select id="mvHaiku"><option value="long">Over 100K tokens (typical agent)</option><option value="short">Under 100K tokens</option></select></div>
-      <p class="ctx">Figures are MB per $1 of monthly plan price, at the selected utilization.</p>
+      <div class="ctl"><span class="eyebrow" id="mvOwLbl">Open-weight at API rates</span>
+        <div class="seg" role="group" aria-labelledby="mvOwLbl" id="mvOw">
+          <button type="button" data-o="0" aria-pressed="true">Hide</button><button type="button" data-o="1">Show</button>
+        </div></div>
+      <p class="ctx" id="mvCtx"></p>
     </div>
     <section class="panel mix-panel"><h3>Standard agentic coding<small>MB of agent text processed per $ of plan, in our measured coding mix: 95.3% cached context re-read, 4.4% new input, 0.3% written</small></h3><div id="mvMix"></div></section>
     <div class="panels">
@@ -367,6 +372,7 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
     <div class="legend">
       <span>GPT written figures include hidden reasoning tokens</span>
       <span>About ±6% across labs from the tokenizer ratio; megabytes assume typical agent text and vary with content</span>
+      <span id="mvOwNote" hidden><i class="dot" style="background:var(--ow)"></i>Open-weight rows are computed from each developer's published API prices, not metered, and are MB per $1 of API spend at any usage level. Their tokenizers are assumed to match OpenAI's on agent text. DeepSeek is at its peak rate; off-peak is half.</span>
     </div>
   </div>
 
@@ -531,6 +537,20 @@ fillModels(); render();
 // Claude: 5h points per $ on Team Premium (850 weekly-equivalent points x 52/12 / $125), / points per Mtok, x chars per token.
 const C_CLAUDE = 3.51/1.50, C_GPT = 3.51;  // Claude 5.5 uses 1.50x the tokens of o200k_base on agent transcripts (nine 285K-char slices, Nov 18, 2026; range 1.40-1.59)
 const SOL = {out:10, rd:0.10, fresh:2}; // list $/Mtok
+// Open-weight models at each developer's own API list price, $/Mtok (Nov 18, 2026). Not metered: MB per $1 of API spend.
+// Kimi: platform.kimi.ai. Qwen: Alibaba Model Studio, Singapore; implicit cache hit. GLM: docs.z.ai. DeepSeek: api-docs.deepseek.com, peak rate
+// (off-peak is half). Mistral: direct API price from Oct 29, 2026. MiMo: mimo.mi.com lists CNY 3.00 / 0.025 / 6.00; USD as Xiaomi's overseas rate. No measured tokenizer ratio yet, so
+// chars per token is assumed equal to o200k_base.
+const C_OW = C_GPT;
+const OW = [
+  {name:"Kimi K3.1 Pro",       fresh:2.00,  rd:0.20,   out:10.00},
+  {name:"Qwen3.8-Max",         fresh:2.00,  rd:0.25,   out:6.00},
+  {name:"GLM-5.3",             fresh:1.40,  rd:0.26,   out:4.40},
+  {name:"DeepSeek V4.1 Flash", fresh:0.30,  rd:0.006,  out:1.20, note:"peak rate"},
+  {name:"MiMo-V2.6-Pro",       fresh:0.435, rd:0.0036, out:0.87},
+  {name:"Mistral Large 4",     fresh:0.70,  rd:0.07,   out:2.10},
+];
+let mvOw = false;
 function mvRows(){
   const hk = $("#mvHaiku").value==="long"?"haiku-long":"haiku-short";
   const claude = (k,name,note)=>({name, via:"Claude plans", note, c:"--anth",
@@ -544,6 +564,8 @@ function mvRows(){
     ...Object.values(GPT_ISO).map(m=>({name:m.name, via:"ChatGPT plans", c:"--oai",
       out:GPT_PTS_PER_USD/m.pts.out*C_GPT, rd:GPT_PTS_PER_USD/m.pts.rd*C_GPT, mix:GPT_PTS_PER_USD/mixOf(m.pts)*C_GPT})),
     sol("Devin Max", 311*M/200, "--cog", false),
+    ...(mvOw ? OW.map(m=>({name:m.name, via:"API list price", note:m.note, c:"--ow", api:true,
+      out:1/m.out*C_OW, rd:1/m.rd*C_OW, mix:1/mixOf(m)*C_OW})) : []),
   ];
 }
 const mb = n => n>=100?Math.round(n).toLocaleString("en-US"):n>=10?n.toFixed(1):n.toFixed(2);
@@ -559,15 +581,26 @@ function mvPanel(R,key){
 let mvU=1;
 function renderModels(){
   document.querySelectorAll("#mvUtil button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.u===mvU));
-  const R=mvRows().map(r=>({...r,out:r.out*mvU,rd:r.rd*mvU,mix:r.mix*mvU}));
+  document.querySelectorAll("#mvOw button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.o==="1")===mvOw));
+  $("#mvOwNote").hidden=!mvOw;
+  $("#mvCtx").textContent="Figures are MB per $1 of monthly plan price, at the selected utilization."+(mvOw?" Open-weight rows are MB per $1 of API spend and do not change with utilization.":"");
+  const R=mvRows().map(r=>r.api?r:({...r,out:r.out*mvU,rd:r.rd*mvU,mix:r.mix*mvU}));
   $("#mvMix").innerHTML=mvPanel(R,"mix");
   $("#mvOut").innerHTML=mvPanel(R,"out"); $("#mvIn").innerHTML=mvPanel(R,"rd");
 }
 $("#mvUtil").onclick=e=>{const b=e.target.closest("button"); if(!b) return; mvU=+b.dataset.u; renderModels();};
 $("#mvHaiku").onchange=renderModels;
+$("#mvOw").onclick=e=>{const b=e.target.closest("button"); if(!b) return; mvOw=b.dataset.o==="1"; renderModels();};
+// Masthead headline for each tab. The plans one is also the static markup.
+const HEADLINES = {
+  plans:  "What your coding plan is <strong>worth at API prices</strong>",
+  models: "How far a plan dollar goes, <strong>model by model</strong>",
+  games:  "Which model gets the <strong>most from your plan</strong>",
+};
 function showView(){
   const v = location.hash==="#models"?"models":location.hash==="#games"?"games":"plans";
   $("#v-plans").hidden = v!=="plans"; $("#v-models").hidden = v!=="models"; $("#v-games").hidden = v!=="games";
+  $("#headline").innerHTML = HEADLINES[v];
   document.querySelectorAll(".tabs a").forEach(a=>{ if(a.dataset.v===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
 }
 document.querySelector(".tabs").onclick=e=>{const a=e.target.closest("a"); if(!a) return; e.preventDefault(); try{history.replaceState(null,"","#"+a.dataset.v)}catch(_){location.hash=a.dataset.v} showView();};
