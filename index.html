@@ -150,6 +150,9 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
   .tabs a{flex:1 1 auto;text-align:center;white-space:nowrap;font-size:12.5px;padding:8px 5px}
 }
 @media (max-width:350px){.tabs a{font-size:11.5px;padding:8px 3px}}
+@media (max-width:560px){
+  .seg{display:flex}.seg button{flex:1 1 0;padding-inline:8px}
+}
 .cfg-btn{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--display);color:var(--on-navy-muted);background:transparent;padding:7px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.14);cursor:pointer}
 .cfg-btn svg{width:20px;height:20px;display:block;flex:none}
 .cfg-btn:hover,.cfg-btn[aria-expanded="true"]{color:var(--on-navy);border-color:rgba(255,255,255,.4)}
@@ -252,6 +255,13 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
   select{min-width:0;width:100%}.ctl{flex:1 1 140px}
 }
 @media (prefers-reduced-motion:reduce){.bar,.row{transition:none}}
+/* Phone: labels get their own line instead of truncating */
+@media (max-width:560px){
+  .mrow .lbl{flex-wrap:wrap;row-gap:1px}
+  .mrow .lbl small{flex:1 0 100%;padding-left:16px}
+  .row .plan .name{white-space:normal;overflow:visible;align-items:baseline}
+}
+@media (max-width:350px){.gh{font-size:10.5px;gap:6px;padding-inline:8px}}
 </style>
 </head>
 <body>
