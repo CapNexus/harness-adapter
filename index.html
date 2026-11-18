@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan Value Board</title>
+<meta name="description" content="What Claude, ChatGPT, Kiro and Devin coding plans are worth at API list prices, from direct metering of each plan's quota.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="What your coding plan is worth at API prices">
+<meta property="og:description" content="What Claude, ChatGPT, Kiro and Devin coding plans are worth at API list prices, from direct metering of each plan's quota.">
+<meta property="og:url" content="https://capnexus.github.io/harness-adapter/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0c2841">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c2841'/%3E%3Crect x='7' y='17' width='4' height='8' fill='%2392d050'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%2392d050'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%2392d050'/%3E%3C/svg%3E">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: CapNexus brand. Navy masthead with the leaders overlapping its lower edge, then one white leaderboard sheet on light gray. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --surface-2:#f8fafc; --fg:#1d2733; --muted:#5f6b78; --faint:#8a96a3; --rule:#e3e8ee;
+  --navy:#0c2841; --navy-2:#123659; --on-navy:#ffffff; --on-navy-muted:#b9c8d8;
+  --accent:#2478c2; --accent-soft:#e5f0fa; --on-accent:#ffffff; --track:#edf1f5; --green:#92d050;
+  --anth:#2478c2; --oai:#0c2841; --cog:#8c9aab; --kiro:#7cbf3a;
+  --shadow:0 1px 2px rgba(12,40,65,.06),0 8px 28px rgba(12,40,65,.08);
+  --x-hi-bg:#92d050; --x-hi-fg:#0c2841;
+  --display:Roboto,"Helvetica Neue",Arial,sans-serif; --mono:"Roboto Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#07182a; --surface:#0d243b; --surface-2:#102a44; --fg:#e8eef4; --muted:#a3b4c6; --faint:#7389a0; --rule:#1b3753;
+  --navy:#04111e; --navy-2:#0a2036; --on-navy-muted:#9fb2c6;
+  --accent:#62a8ea; --accent-soft:#163a5e; --on-accent:#04111e; --track:#14304c;
+  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#07182a; --surface:#0d243b; --surface-2:#102a44; --fg:#e8eef4; --muted:#a3b4c6; --faint:#7389a0; --rule:#1b3753;
+  --navy:#04111e; --navy-2:#0a2036; --on-navy-muted:#9fb2c6;
+  --accent:#62a8ea; --accent-soft:#163a5e; --on-accent:#04111e; --track:#14304c;
+  --anth:#4f9be3; --oai:#d3dee9; --cog:#8aa0b8; --kiro:#92d050;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35); color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--display);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:1040px;margin:0 auto}
+.eyebrow{font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Masthead */
+.mast{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--on-navy)}
+.mast .inner{padding-block:28px 96px;display:grid;gap:14px}
+.mast .eyebrow{color:var(--green)}
+h1{font-size:clamp(30px,5vw,48px);font-weight:300;letter-spacing:-.015em;line-height:1.1;margin:0;max-width:18ch;text-wrap:balance}
+h1 strong{font-weight:700}
+.lede{color:var(--on-navy-muted);max-width:60ch;margin:0;font-size:16px}
+
+/* Leaders strip, overlapping the masthead */
+.leaders{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:-64px}
+.leader{background:var(--surface);border-radius:8px;box-shadow:var(--shadow);padding:16px 18px;display:grid;gap:4px;border-top:3px solid var(--vc)}
+.leader .who{font:500 12px var(--display);color:var(--muted);display:flex;align-items:center;gap:7px}
+.leader .amt{font:700 30px/1.1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.leader .amt small{font:400 14px var(--display);color:var(--muted);letter-spacing:0}
+.leader .sub{font-size:13px;color:var(--muted)}
+.leader .sub b{color:var(--fg);font-weight:500}
+
+/* Board */
+main{padding-block:28px 0}
+.sheet{background:var(--surface);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.toolbar{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:end;padding:18px 22px;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+.ctl{display:grid;gap:6px}
+.ctl .eyebrow{font-size:10.5px}
+select{font:inherit;font-size:14px;padding:8px 32px 8px 12px;border-radius:6px;border:1px solid var(--rule);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a96a3' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--fg);appearance:none;-webkit-appearance:none;min-width:190px;max-width:100%}
+select:disabled{color:var(--faint)}
+.seg{display:inline-flex;background:var(--track);border-radius:7px;padding:3px}
+.seg button{font:500 13px var(--mono);border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:5px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(12,40,65,.15)}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ctx{margin:0;flex:1 1 240px;font-size:13px;color:var(--muted);align-self:center}
+
+.grid{display:grid;grid-template-columns:40px minmax(0,1.15fr) 84px minmax(0,2fr) 200px;column-gap:18px;align-items:center}
+.head{padding:12px 22px 10px;border-bottom:1px solid var(--rule)}
+.head span{font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.r{text-align:right}
+.row{padding:16px 22px;border-bottom:1px solid var(--rule);transition:background .15s}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--surface-2)}
+.rank{font:500 13px var(--mono);color:var(--faint);font-variant-numeric:tabular-nums}
+.row.top .rank{color:var(--fg)}
+.plan{min-width:0;display:grid;gap:3px}
+.plan .name{font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan .model{font-size:13px;color:var(--muted)}
+.plan .tags{display:flex;gap:5px;flex-wrap:wrap}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.tag{font:500 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 5px;border-radius:3px;color:var(--faint);border:1px solid var(--rule)}
+.tag.meas{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.tag.bound{border-style:dashed;color:var(--muted)}
+.cost{text-align:right;white-space:nowrap}
+.cost b{font:500 17px var(--mono);font-variant-numeric:tabular-nums}
+.cost small{display:block;font:11px var(--mono);color:var(--faint);margin-top:-2px}
+.track{position:relative;height:12px;background:var(--track);border-radius:6px}
+.bar{position:absolute;inset:0 auto 0 0;border-radius:6px;transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.bar.bound{background-image:repeating-linear-gradient(135deg,transparent 0 4px,color-mix(in srgb,var(--surface) 70%,transparent) 4px 6px)}
+.tick{position:absolute;top:-5px;bottom:-5px;width:3px;margin-left:-1px;border-radius:2px;background:var(--fg);box-shadow:0 0 0 2px var(--surface)}
+.val{display:grid;grid-template-columns:minmax(0,1fr) 62px;gap:12px;align-items:center;text-align:right}
+.val b{font:700 23px/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.top .val b{font-size:27px}
+.xchip{display:inline-block;text-align:center;font:700 13px/1 var(--mono);padding:6px 0;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.xchip.x-hi{background:var(--x-hi-bg);color:var(--x-hi-fg)}
+.xchip.x-mid{background:var(--accent);color:var(--on-accent)}
+.xchip.x-lo{background:var(--track);color:var(--muted);font-weight:500}
+.leader .xchip{padding:3px 7px;font-size:12px;margin-left:2px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;padding:14px 22px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted);background:var(--surface-2)}
+.legend i{display:inline-block;vertical-align:-2px;margin-right:6px}
+.lg-tick{width:3px;height:14px;border-radius:2px;background:var(--fg)}
+.lg-hatch{width:22px;height:10px;border-radius:5px;background:var(--oai) repeating-linear-gradient(135deg,transparent 0 4px,color-mix(in srgb,var(--surface) 70%,transparent) 4px 6px)}
+.empty{padding:48px 22px;text-align:center;color:var(--muted)}
+
+/* Promo */
+.promo{margin-top:28px;border-radius:8px;background:linear-gradient(120deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--on-navy);padding:26px 28px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 32px;align-items:center;position:relative;overflow:hidden}
+.promo::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:28px solid color-mix(in srgb,var(--green) 18%,transparent);pointer-events:none}
+.promo .eyebrow{color:var(--green);display:flex;align-items:center;gap:10px}
+.soon{font:500 9.5px/1 var(--mono);letter-spacing:.1em;padding:4px 7px;border-radius:999px;background:var(--green);color:#0c2841}
+.promo h2{font:300 clamp(22px,3vw,30px)/1.2 var(--display);margin:8px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.promo h2 strong{font-weight:700}
+.promo p{margin:0;color:var(--on-navy-muted);max-width:58ch;font-size:14.5px}
+.gh{display:inline-flex;align-items:center;gap:10px;margin-top:16px;padding:9px 14px 9px 12px;border-radius:6px;background:#ffffff;color:#0c2841;font:500 13.5px var(--mono);text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,.2);position:relative;z-index:1;max-width:100%}
+.gh svg{width:18px;height:18px;flex:none}
+.gh span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh:hover{background:var(--green)}
+.gh:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.stack{display:grid;grid-template-columns:repeat(2,auto);gap:8px;position:relative;z-index:1;justify-content:end}
+.stack span{font:500 12px var(--mono);padding:8px 12px;border-radius:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.stack .plus{background:none;border:0;padding:8px 0;color:var(--green)}
+@media (max-width:700px){.promo{grid-template-columns:1fr;padding:22px 18px}.stack{display:flex;flex-wrap:wrap;justify-content:start}}
+
+/* View tabs */
+.tabs{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.tabs a{font:500 14px var(--display);color:var(--on-navy-muted);text-decoration:none;padding:8px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.14)}
+.tabs a[aria-current="page"]{background:var(--on-navy);color:#0c2841;border-color:var(--on-navy)}
+.tabs a:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* Settings cog */
+.tabbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.tabbar .tabs{margin-top:0}
+.cfg{position:relative;margin-left:auto;z-index:20}
+.cfg-btn{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--display);color:var(--on-navy-muted);background:transparent;padding:7px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.14);cursor:pointer}
+.cfg-btn svg{width:20px;height:20px;display:block;flex:none}
+.cfg-btn:hover,.cfg-btn[aria-expanded="true"]{color:var(--on-navy);border-color:rgba(255,255,255,.4)}
+.cfg-btn:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cfg-btn.changed{color:var(--on-navy);border-color:var(--green)}
+.cfg-note{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.cfg-note::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.cfg-pop{box-sizing:border-box;position:absolute;right:0;top:calc(100% + 8px);width:min(340px,calc(100vw - 32px));background:var(--surface);color:var(--fg);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--shadow);padding:16px 18px;display:grid;gap:10px}
+.cfg-pop fieldset{border:0;margin:0;padding:0;display:grid;gap:8px;min-width:0}
+.cfg-pop legend{padding:0;margin-bottom:8px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cfg-pop label{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-items:start;font-size:14px;cursor:pointer}
+.cfg-pop label b{font:500 14px var(--mono)}
+.cfg-pop label small{grid-column:2;font-size:12.5px;color:var(--muted)}
+.cfg-pop input{margin:3px 0 0;accent-color:var(--accent);grid-row:span 2}
+.cfg-pop input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cfg-pop p{margin:0;padding-top:10px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.5;color:var(--muted)}
+
+/* Model throughput view */
+.mv-sheet{margin-top:-64px}
+.mv-intro{padding:20px 22px;border-bottom:1px solid var(--rule);display:grid;gap:6px}
+.mv-intro h2{font:700 20px/1.25 var(--display);margin:0;letter-spacing:-.01em}
+.mv-intro p{margin:0;color:var(--muted);font-size:14px;max-width:72ch}
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel{padding:18px 22px 22px;display:grid;gap:14px;align-content:start;min-width:0}
+.panel+.panel{border-left:1px solid var(--rule)}
+.panel h3{margin:0;font:700 15px var(--display)}
+.panel h3 small{display:block;font:400 12.5px var(--display);color:var(--muted);margin-top:2px}
+#mvOut,#mvIn,#mvMix{display:grid;gap:16px}
+.mix-panel{border-bottom:1px solid var(--rule)}
+.mix-panel .mrow .amt{font-size:22px}
+.mix-panel .mrow .track{height:14px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:6px 12px;align-items:center}
+.mrow .lbl{font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:7px;min-width:0}
+.mrow .lbl small{color:var(--muted);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .amt{font:700 17px var(--display);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mrow .amt small{font:400 11px var(--mono);color:var(--muted)}
+.mrow .track{grid-column:1/-1;height:10px}
+.mrow.focus .lbl{font-weight:700}
+.mrow.dim{opacity:.55}
+@media (max-width:760px){.panels{grid-template-columns:1fr}.panel+.panel{border-left:0;border-top:1px solid var(--rule)}}
+
+/* In-plan value view */
+.g-sheet{margin-top:28px}
+.g-vendor{border-bottom:1px solid var(--rule)}
+.g-vh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:18px 22px 14px;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+.g-vh h3{margin:0;font:700 16px var(--display);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.g-vh p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.g-vh .tags{display:flex;gap:5px;flex-wrap:wrap}
+.g-grid{display:grid;grid-template-columns:minmax(0,1.15fr) 184px minmax(0,1.7fr) 138px;column-gap:18px;align-items:center}
+.g-grid.nobar{grid-template-columns:minmax(0,1.15fr) 184px minmax(0,1.7fr)}
+.g-head{padding:12px 22px 10px;border-bottom:1px solid var(--rule)}
+.g-head span{font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.g-row{padding:14px 22px;border-bottom:1px solid var(--rule)}
+.g-row .plan .name{white-space:normal;flex-wrap:wrap}
+.g-rels{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:right}
+.g-rels b{font:500 15px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.g-rels small{display:none;font:11px var(--mono);color:var(--faint)}
+.g-val{display:grid;grid-template-columns:minmax(0,1fr) 62px;gap:10px;align-items:center;text-align:right}
+.g-delta{font:500 13px var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.g-delta.ref{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.g-rv{font-size:13.5px;color:var(--muted)}
+.g-rv b{font:700 17px var(--display);color:var(--fg);font-variant-numeric:tabular-nums;margin-right:6px}
+.tag.g-best{background:var(--x-hi-bg);color:var(--x-hi-fg);border-color:var(--x-hi-bg)}
+.tag.g-pen{background:var(--fg);color:var(--surface);border-color:var(--fg)}
+.g-take{margin:0;padding:16px 22px 18px;font-size:14px;line-height:1.6;max-width:86ch}
+.g-take b{font-weight:700}
+#gLead .leader .amt{font-size:26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#gLead .leader .who{flex-wrap:wrap}
+@media (max-width:640px){
+  .g-head{display:none}
+  .g-vh,.g-row,.g-take{padding-left:16px;padding-right:16px}
+  .g-grid.g-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"plan val" "rels rels" "bar bar";row-gap:10px}
+  .g-grid.g-row.nobar{grid-template-areas:"plan plan" "rels rels" "bar bar"}
+  .g-row .plan{grid-area:plan}.g-row .g-val{grid-area:val;grid-template-columns:auto;gap:6px;justify-items:end;align-self:start}.g-row .xchip{padding:5px 9px}
+  .g-row .g-rels{grid-area:rels;display:flex;gap:18px;text-align:left}
+  .g-rels small{display:inline;margin-right:5px}
+  .g-row .track,.g-row .g-rv{grid-area:bar}
+  #gLead .leader .amt{font-size:22px}
+}
+
+/* Method */
+.method{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-block:40px 24px}
+.method h2{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.method p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6}
+.method b{color:var(--fg);font-weight:500}
+footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size:12px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .method{grid-template-columns:1fr;gap:20px}
+}
+@media (max-width:640px){
+  .mast .inner{padding-block:22px 84px}
+  .leader{padding:12px 14px}.leader .amt{font-size:24px}
+  .head{display:none}
+  .toolbar,.row,.legend{padding-left:16px;padding-right:16px}
+  .grid.row{grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"rank plan val" ". cost cost" ". bar bar";row-gap:10px}
+  .row .rank{grid-area:rank;align-self:start;padding-top:2px}.row .plan{grid-area:plan}.row .val{grid-area:val;grid-template-columns:auto;gap:6px;justify-items:end}.row .xchip{padding:5px 9px}
+  .row .cost{grid-area:cost;text-align:left}.row .cost small{display:inline;margin-left:4px}
+  .row .track{grid-area:bar}
+  select{min-width:0;width:100%}.ctl{flex:1 1 140px}
+}
+@media (prefers-reduced-motion:reduce){.bar,.row{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="mast gutter"><div class="inner">
+  <div class="eyebrow">AI coding plan value index · Updated as new models release · As of <time datetime="2026-11-18">November 18, 2026</time></div>
+  <h1>What your coding plan is <strong>worth at API prices</strong></h1>
+  <div class="tabbar">
+    <nav class="tabs" aria-label="Views"><a href="#plans" data-v="plans">Plan value</a><a href="#models" data-v="models">Model throughput</a><a href="#games" data-v="games">In-plan value</a></nav>
+    <div class="cfg" id="cfg">
+      <button type="button" class="cfg-btn" id="cfgBtn" aria-label="Settings" aria-expanded="false" aria-controls="cfgPop"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8.6" stroke-width="3" stroke-dasharray="3.377 3.377"/><circle cx="12" cy="12" r="6.2" stroke-width="2"/><circle cx="12" cy="12" r="2.1" stroke-width="2"/></svg><span class="cfg-note" id="cfgNote" hidden></span></button>
+      <div class="cfg-pop" id="cfgPop" role="dialog" aria-label="Settings" hidden>
+        <fieldset>
+          <legend>Claude cache-write value</legend>
+          <label for="cw-2"><input type="radio" name="cw" id="cw-2" value="2"><span><b>2×</b> input</span><small>The 1-hour cache Claude Code writes. Default.</small></label>
+          <label for="cw-125"><input type="radio" name="cw" id="cw-125" value="1.25"><span><b>1.25×</b> input</span><small>The 5-minute cache.</small></label>
+          <label for="cw-1"><input type="radio" name="cw" id="cw-1" value="1"><span><b>1×</b> input</span><small>Plain input price, no cache write.</small></label>
+        </fieldset>
+        <p>Sets the API price used for new input on Claude plans, which changes every Claude multiple on the Plan value and In-plan value tabs. Choose another value to compare with API use on the 5-minute cache or without caching. Kiro and ChatGPT figures do not change.</p>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<div class="gutter"><div class="inner">
+<div id="v-plans">
+  <section class="leaders" id="leaders" aria-label="Top plan per vendor"></section>
+
+  <aside class="promo" aria-label="CapNexus Harness Adapter">
+    <div>
+      <div class="eyebrow">CapNexus Harness Adapter <span class="soon">COMING SOON</span></div>
+      <h2>One interface to <strong>every top coding agent</strong></h2>
+      <p>Build your own harness on the agents ranked above. The CapNexus Harness Adapter drives each one over its native protocol and exposes them all through a single ACP interface, with a tested record of which features each agent version supports.</p>
+      <a class="gh" href="https://github.com/capnexus/harness-adapter" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>github.com/capnexus/harness-adapter</span></a>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <span><i class="dot" style="background:var(--anth)"></i>Claude Code</span>
+      <span><i class="dot" style="background:#ffffff"></i>Codex</span>
+      <span><i class="dot" style="background:var(--kiro)"></i>Kiro</span>
+      <span><i class="dot" style="background:var(--cog)"></i>Devin</span>
+      <span><i class="dot" style="background:#f5a524"></i>OpenCode</span>
+    </div>
+  </aside>
+  <main>
+    <div class="sheet">
+      <div class="toolbar">
+        <div class="ctl"><label class="eyebrow" for="lab">Lab</label>
+          <select id="lab"><option value="best">All labs</option><option value="anthropic">Anthropic</option><option value="openai">OpenAI</option></select></div>
+        <div class="ctl"><label class="eyebrow" for="model">Model</label>
+          <select id="model" disabled><option>Best per plan</option></select></div>
+        <div class="ctl"><span class="eyebrow" id="utilLbl">Plan utilization</span>
+          <div class="seg" role="group" aria-labelledby="utilLbl" id="util">
+            <button type="button" data-u="0.5">50%</button><button type="button" data-u="0.75">75%</button><button type="button" data-u="1" aria-pressed="true">100%</button>
+          </div></div>
+        <p class="ctx" id="ctx"></p>
+      </div>
+      <div class="grid head" aria-hidden="true"><span>#</span><span>Plan</span><span class="r">You pay</span><span>API value per month</span><span class="r">Value &nbsp;·&nbsp; Multiple</span></div>
+      <div id="board"></div>
+      <div class="legend">
+        <span><span class="xchip x-hi" style="padding:3px 7px">20×+</span> <span class="xchip x-mid" style="padding:3px 7px">10–20×</span> <span class="xchip x-lo" style="padding:3px 7px">&lt;10×</span> value as a multiple of price</span>
+        <span><i class="lg-tick"></i>Subscription price on the value scale</span>
+        <span><span class="tag meas">Measured</span> metered directly</span>
+        <span><span class="tag">Scaled</span> from a measured tier by price</span>
+      </div>
+    </div>
+  </main>
+
+
+  <section class="method">
+    <div><h2>How we measure</h2><p>We run known token volumes through each vendor's own coding tool and read the plan's quota meter as it ticks. Pricing those tokens at <b>list API rates</b> gives the dollars one point of quota is worth. Every plan is valued on one standard agentic coding mix: 95.3% cached context re-read, 4.4% new input, 0.3% output. New input on Claude plans is priced as <span data-cw="measure">the 1-hour cache write Claude Code makes (2× input)</span>, and on Kiro as a 5-minute write (1.25×).</p></div>
+    <div><h2>Scaling tiers</h2><p>Anthropic and OpenAI now size tiers in proportion to price, so one measured tier sets the rest. Claude was metered on a <b>Team Premium</b> seat (6.25× Pro at $125/mo). Prices are monthly billing; a month is 52/12 weeks.</p></div>
+    <div><h2>Caveats</h2><p><b>ChatGPT</b> was metered on the $200 Pro tier with nothing else running on the account: GPT-6.2 Sol and Astra one token type at a time, valued on our standard agentic coding mix. The $500 Pro tier and Plus are scaled by price. <b>Kiro</b> sells a credit budget; its Claude 5.5 models were metered per token type and valued on the same agentic mix. "All labs" ranks each plan on its highest-value model.</p></div>
+  </section>
+</div>
+
+<div id="v-models" hidden>
+  <div class="sheet mv-sheet">
+    <div class="mv-intro">
+      <span class="eyebrow">Model throughput · per dollar of plan spend</span>
+      <h2>How much agentic coding a plan dollar buys, by model</h2>
+      <p>Tokenizers differ between labs, so tokens don't compare. We convert to megabytes of agent text (code, JSON, tool output). The headline uses one fixed coding mix for every model, taken from our own measured agent sessions. Read and written capacity are broken out below.</p>
+    </div>
+    <div class="toolbar">
+      <div class="ctl"><span class="eyebrow" id="mvUtilLbl">Plan utilization</span>
+        <div class="seg" role="group" aria-labelledby="mvUtilLbl" id="mvUtil">
+          <button type="button" data-u="0.5">50%</button><button type="button" data-u="0.75">75%</button><button type="button" data-u="1" aria-pressed="true">100%</button>
+        </div></div>
+      <div class="ctl"><label class="eyebrow" for="mvHaiku">Haiku prompt size</label>
+        <select id="mvHaiku"><option value="long">Over 100K tokens (typical agent)</option><option value="short">Under 100K tokens</option></select></div>
+      <p class="ctx">Figures are MB per $1 of monthly plan price, at the selected utilization.</p>
+    </div>
+    <section class="panel mix-panel"><h3>Standard agentic coding<small>MB of agent text processed per $ of plan, in our measured coding mix: 95.3% cached context re-read, 4.4% new input, 0.3% written</small></h3><div id="mvMix"></div></section>
+    <div class="panels">
+      <section class="panel"><h3>Written only<small>Model output, per $ of plan</small></h3><div id="mvOut"></div></section>
+      <section class="panel"><h3>Read from cache only<small>Context re-read each turn, per $ of plan</small></h3><div id="mvIn"></div></section>
+    </div>
+    <div class="legend">
+      <span>GPT written figures include hidden reasoning tokens</span>
+      <span>About ±6% across labs from the tokenizer ratio; megabytes assume typical agent text and vary with content</span>
+    </div>
+  </div>
+
+  <section class="method">
+    <div><h2>Why bytes</h2><p>The same text is about 1.5× more tokens on Claude's tokenizer than on OpenAI's, measured on nine slices of real agent transcripts (range 1.40–1.59×). Bytes of agent text don't depend on the tokenizer, so they compare across labs. We use agent-transcript text, where Claude runs about 2.3 characters per token; prose packs about 1.5× more.</p></div>
+    <div><h2>How we convert</h2><p>Plan dollars buy quota; our meters give quota per token for each model and token type. Claude uses the measured 5-hour point rates. GPT-6.2 Sol and Astra use weekly point rates measured separately for new input, cached input and output on ChatGPT Pro. GPT-6.1 Sol on Devin uses its list-price value multiple ($2 input / $0.10 cached / $10 output).</p></div>
+    <div><h2>Caveats</h2><p>This is capacity, not work done: models differ in how much they write per task. Haiku depends on prompt size. Per-turn overhead also varies by harness.</p></div>
+  </section>
+</div>
+
+<div id="v-games" hidden>
+  <section class="leaders" id="gLead" aria-label="Model value spread in each vendor's plans"></section>
+  <div class="sheet g-sheet">
+    <div class="mv-intro">
+      <span class="eyebrow">In-plan value · by model, within one plan</span>
+      <h2>Plan meters charge some models more than their list price implies</h2>
+      <p>Quota meters do not charge models in proportion to their API list prices. One plan dollar therefore buys more API value on some models than on others. Each row shows a model's list price and quota cost as multiples of the plan's reference model, then the API value one plan dollar buys at 100% use.</p>
+    </div>
+    <div id="gBody"></div>
+    <div class="legend">
+      <span><i class="lg-tick"></i>Reference model's value</span>
+      <span>Bars are scaled within each vendor</span>
+      <span><span class="tag g-best">Best value</span> highest API value per plan dollar in the plan</span>
+      <span><span class="tag g-pen">Below typical</span> 10% or more under the plan's median model</span>
+    </div>
+  </div>
+
+  <section class="method">
+    <div><h2>One basis</h2><p>Every figure on this tab uses our <b>standard agentic coding mix</b>: 95.3% cached context re-read, 4.4% new input, 0.3% output, by tokens. List price and quota cost are each the cost of one million tokens of that mix. New input is priced as the cache write each tool makes, because that is what the same tokens would cost on the API: <span data-cw="basis">the 1-hour cache on Claude plans (2× the input price)</span>, the 5-minute cache on Kiro (1.25×), ordinary input on ChatGPT.</p></div>
+    <div><h2>Reading a row</h2><p><b>List price</b> and <b>quota cost</b> are multiples of the reference model in the same plan. If the quota multiple is smaller than the list multiple, the meter charges that model less than its list price implies, and a plan dollar buys more on it. The bar is API list dollars per plan dollar at 100% use.</p></div>
+    <div><h2>What is measured</h2><p id="gMethod"></p></div>
+  </section>
+</div>
+</div></div>
+
+<footer class="gutter"><div class="inner"><span>CapNexus · AI plan metering</span><span>Updated as new models release · Data as of <time datetime="2026-11-18">November 18, 2026</time></span></div></footer>
+
+<script>
+const M = 52/12;
+const MODELS = {
+  "opus-5.5":   {lab:"anthropic", name:"Claude Opus 5.5"},
+  "sonnet-5.5": {lab:"anthropic", name:"Claude Sonnet 5.5"},
+  "haiku-5.5":  {lab:"anthropic", name:"Claude Haiku 5.5"},
+  "gpt-6.2-astra":{lab:"openai",  name:"GPT-6.2 Astra"},
+  "gpt-6.2-sol":{lab:"openai",    name:"GPT-6.2 Sol"},
+  "gpt-6.1-terra":{lab:"openai",  name:"GPT-6.1 Terra"},
+  "gpt-6.1-sol":{lab:"openai",    name:"GPT-6.1 Sol"},  // Devin Max only; no longer listed on ChatGPT plans (legacy)
+};
+// Standard agentic coding blend, by share of text: our measured Codex week (Nov 3-5, 2026; 17,901 GPT-6.1 Sol requests).
+// Fresh input is billed as a cache write on Claude.
+const MIX = {rd:0.9528, fresh:0.0443, out:0.00294};
+const mixOf = o => MIX.rd*o.rd+MIX.fresh*o.fresh+MIX.out*o.out;
+// Value multiple (list $ per plan $) at 100% use, from the measured plan in each family.
+// Claude: measured on a Team Premium seat (6.25x Pro, $125/mo monthly); every tier is $20 per 1x Pro of weekly usage.
+// Value multiple on the standard agentic mix. 5h points per plan $ (850 weekly-equivalent points x 52/12 / $125) and points per Mtok
+// by token type (wr = cache write, how Claude Code bills new input). New input is valued at the list price of the cache
+// product actually delivered: Claude Code writes the 1-hour cache (2x input); Kiro's cache lives about 5 minutes (1.25x input).
+const PTS_PER_USD = 850*M/125, KIRO_WRITE = 1.25;
+let CLAUDE_WRITE = 2;  // reader-selectable in Settings (2, 1.25 or 1); setClaudeWrite() recomputes claudeX in place
+const PTS = {"opus-5.5":{out:23.24,rd:0.119,wr:5.92}, "sonnet-5.5":{out:15.89,rd:0.0805,wr:4.01}, "haiku-long":{out:5.39,rd:0.0270,wr:1.38}, "haiku-short":{out:1.068,rd:0.00544,wr:0.268}};
+const CLAUDE_LIST = {"opus-5.5":{rd:0.20,fresh:4,out:20}, "sonnet-5.5":{rd:0.10,fresh:2,out:10}, "haiku-long":{rd:0.05,fresh:0.50,out:2.50}, "haiku-short":{rd:0.01,fresh:0.10,out:0.50}};
+const withWrite = (l,a) => ({...l, fresh:l.fresh*a});
+const claudeMixX = k => PTS_PER_USD*mixOf(withWrite(CLAUDE_LIST[k],CLAUDE_WRITE))/mixOf({rd:PTS[k].rd, fresh:PTS[k].wr, out:PTS[k].out});
+// Haiku's plan row uses the over-100K tier, the typical agent prompt size.
+const claudeXNow = () => ({"opus-5.5":claudeMixX("opus-5.5"), "sonnet-5.5":claudeMixX("sonnet-5.5"), "haiku-5.5":claudeMixX("haiku-long")});
+const claudeX = claudeXNow();  // PLANS rows hold this object; mutate it, never reassign
+// GPT-6.2 on ChatGPT Pro: weekly points per Mtok by token type, from isolated tick brackets (Nov 18, 2026;
+// one weekly point per bracket, no other Codex activity). list = $/Mtok. The weekly meter is 100 points.
+const GPT_ISO = {
+  "gpt-6.2-sol":  {name:"GPT-6.2 Sol",   pts:{fresh:0.1545, rd:0.00792, out:0.7337}, list:{fresh:2, rd:0.10, out:10}},
+  "gpt-6.2-astra":{name:"GPT-6.2 Astra", pts:{fresh:0.6488, rd:0.0315, out:2.9112}, list:{fresh:8, rd:0.40, out:40}},
+  "gpt-6.1-terra":{name:"GPT-6.1 Terra", pts:{fresh:0.1491, rd:0.00769, out:0.6970}, list:{fresh:1, rd:0.05, out:5}},
+};
+const GPT_PTS_PER_USD = 100*M/200;
+// Value multiple on the standard agentic mix: points per plan $ x list $ of the mix / points of the mix.
+const gptX = Object.fromEntries(Object.entries(GPT_ISO).map(([k,m])=>[k, GPT_PTS_PER_USD*mixOf(m.list)/mixOf(m.pts)]));
+const oaiX = gptX;
+// Kiro (kiro-cli 3.3.0, Nov 18, 2026): credits per Mtok for carried context / fresh input / output, at $0.02 per credit,
+// valued on the standard agentic mix at list (Opus 5.5 $4/$0.20/$20, Sonnet 5.5 $2/$0.10/$10, Haiku 5.5 $0.10/$0.01/$0.50).
+const KIRO = {
+  "opus-5.5":  {cr:{rd:3.3167,  fresh:33.168, out:220.90}, list:{rd:0.20, fresh:4,    out:20}},
+  "sonnet-5.5":{cr:{rd:2.1559,  fresh:21.559, out:143.58}, list:{rd:0.10, fresh:2,    out:10}},
+  "haiku-5.5": {cr:{rd:0.11542, fresh:1.1542, out:5.770},  list:{rd:0.01, fresh:0.10, out:0.50}},
+};
+const kiroX = Object.fromEntries(Object.entries(KIRO).map(([k,m])=>[k, mixOf(withWrite(m.list,KIRO_WRITE))/mixOf(m.cr)/0.02]));
+const PLANS = [
+  {v:"Anthropic", c:"--anth", plan:"Claude Ultra",         price:200, x:claudeX, src:"lin"},
+  {v:"Anthropic", c:"--anth", plan:"Claude Team Premium",  price:125, x:claudeX, src:"meas"},
+  {v:"Anthropic", c:"--anth", plan:"Claude Max",           price:100, x:claudeX, src:"lin"},
+  {v:"Anthropic", c:"--anth", plan:"Claude Team Standard", price:25,  x:claudeX, src:"lin"},
+  {v:"Anthropic", c:"--anth", plan:"Claude Pro",           price:20,  x:claudeX, src:"lin"},
+  // ChatGPT Pro is sold at $100, $200 and $500; the $200 tier was metered. $500 is scaled by price (allowance not published).
+  {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Pro $500",     price:500, x:oaiX, src:"lin"},
+  {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Pro $200",     price:200, x:oaiX, src:"meas"},
+  {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Plus",         price:20,  x:oaiX, src:"lin"},
+  {v:"Cognition", c:"--cog",  plan:"Devin Max",            price:200, x:{"gpt-6.1-sol":311*M/200}, src:"meas"},
+  {v:"Kiro",      c:"--kiro", plan:"Kiro Power",           price:200, x:kiroX, src:"meas"},
+  {v:"Kiro",      c:"--kiro", plan:"Kiro Pro Max",         price:100, x:kiroX, src:"lin"},
+  {v:"Kiro",      c:"--kiro", plan:"Kiro Pro",             price:20,  x:kiroX, src:"lin"},
+];
+const S = {lab:"best", model:null, util:1};
+
+const $ = s=>document.querySelector(s);
+const usd = n=> "$"+Math.round(n).toLocaleString("en-US");
+const pre = r => r.bound?"≤":"";
+// Multiple tiers: 20x and up, 10-20x, under 10x.
+const xcls = x => x>=20?"x-hi":x>=10?"x-mid":"x-lo";
+const xtitle = x => x>=20?"20× or more of price":x>=10?"10–20× of price":"Under 10× of price";
+const dot = r => `<span class="dot" style="background:var(${r.c})"></span>`;
+const tags = r => (r.src==="meas"?`<span class="tag meas">Measured</span>`:`<span class="tag">Scaled</span>`)
+  + (r.bound?`<span class="tag bound" title="Account-wide meter: true value may be lower">Upper bound</span>`:"");
+
+function rows(){
+  return PLANS.flatMap(p=>{
+    let mid;
+    if(S.lab==="best") mid=Object.keys(p.x).sort((a,b)=>p.x[b]-p.x[a])[0];
+    else { mid=S.model; if(!(mid in p.x)) return []; }
+    const x=p.x[mid]*S.util;
+    return [{...p, mid, mult:x, value:p.price*x}];
+  }).sort((a,b)=>b.value-a.value||b.mult-a.mult);
+}
+
+function render(){
+  document.querySelectorAll("#util button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.u===S.util));
+  const R=rows(), pct=`${S.util*100}%`;
+  $("#ctx").textContent = S.lab==="best"
+    ? `Every plan ranked on its highest-value model, at ${pct} use.`
+    : `Plans that offer ${MODELS[S.model].name}, at ${pct} use.`;
+
+  const seen=new Set(), lead=R.filter(r=>!seen.has(r.v)&&seen.add(r.v)).slice(0,4);
+  $("#leaders").innerHTML = lead.map(r=>`
+    <div class="leader" style="--vc:var(${r.c})">
+      <span class="who">${dot(r)}${r.v}</span>
+      <span class="amt">${pre(r)}${usd(r.value)}<small> /mo</small></span>
+      <span class="sub"><b>${r.plan}</b> · ${usd(r.price)}/mo <span class="xchip ${xcls(r.mult)}">${pre(r)}${r.mult.toFixed(1)}×</span></span>
+    </div>`).join("");
+
+  if(!R.length){ $("#board").innerHTML=`<div class="empty">No plan we've metered offers this model yet.</div>`; return; }
+  const max=Math.max(...R.map(r=>r.value));
+  $("#board").innerHTML = R.map((r,i)=>`
+    <div class="grid row${i===0?" top":""}">
+      <span class="rank">${String(i+1).padStart(2,"0")}</span>
+      <div class="plan"><span class="name">${dot(r)}${r.plan}</span><span class="model">${MODELS[r.mid].name}</span><span class="tags">${tags(r)}</span></div>
+      <div class="cost"><b>${usd(r.price)}</b><small>per month</small></div>
+      <div class="track" role="img" aria-label="${pre(r)}${usd(r.value)} of API value for ${usd(r.price)}"><div class="bar${r.bound?" bound":""}" style="width:${r.value/max*100}%;background-color:var(${r.c})"></div><div class="tick" style="left:${r.price/max*100}%"></div></div>
+      <div class="val"><b>${pre(r)}${usd(r.value)}</b><span class="xchip ${xcls(r.mult)}" title="${xtitle(r.mult)}">${pre(r)}${r.mult.toFixed(1)}×</span></div>
+    </div>`).join("");
+}
+function fillModels(){
+  const sel=$("#model");
+  if(S.lab==="best"){ sel.innerHTML="<option>Best per plan</option>"; sel.disabled=true; S.model=null; return; }
+  const ids=Object.keys(MODELS).filter(k=>MODELS[k].lab===S.lab);
+  sel.innerHTML=ids.map(k=>`<option value="${k}">${MODELS[k].name}</option>`).join("");
+  sel.disabled=false; S.model=ids[0];
+}
+$("#util").onclick=e=>{const b=e.target.closest("button"); if(!b) return; S.util=+b.dataset.u; render();};
+$("#lab").onchange=e=>{S.lab=e.target.value; fillModels(); render();};
+$("#model").onchange=e=>{S.model=e.target.value; render();};
+fillModels(); render();
+
+// Model throughput: MB of agent text per $ of plan price, at 100% use.
+// Claude: 5h points per $ on Team Premium (850 weekly-equivalent points x 52/12 / $125), / points per Mtok, x chars per token.
+const C_CLAUDE = 3.51/1.50, C_GPT = 3.51;  // Claude 5.5 uses 1.50x the tokens of o200k_base on agent transcripts (nine 285K-char slices, Nov 18, 2026; range 1.40-1.59)
+const SOL = {out:10, rd:0.10, fresh:2}; // list $/Mtok
+function mvRows(){
+  const hk = $("#mvHaiku").value==="long"?"haiku-long":"haiku-short";
+  const claude = (k,name,note)=>({name, via:"Claude plans", note, c:"--anth",
+    out:PTS_PER_USD/PTS[k].out*C_CLAUDE, rd:PTS_PER_USD/PTS[k].rd*C_CLAUDE,
+    mix:PTS_PER_USD/(MIX.rd*PTS[k].rd+MIX.fresh*PTS[k].wr+MIX.out*PTS[k].out)*C_CLAUDE});
+  const sol = (via,x,c,bound)=>({name:"GPT-6.1 Sol", via, c, bound, out:x/SOL.out*C_GPT, rd:x/SOL.rd*C_GPT, mix:x/(MIX.rd*SOL.rd+MIX.fresh*SOL.fresh+MIX.out*SOL.out)*C_GPT});
+  return [
+    claude("opus-5.5","Claude Opus 5.5"),
+    claude("sonnet-5.5","Claude Sonnet 5.5"),
+    claude(hk,"Claude Haiku 5.5", hk==="haiku-long"?"over 100K":"under 100K"),
+    ...Object.values(GPT_ISO).map(m=>({name:m.name, via:"ChatGPT plans", c:"--oai",
+      out:GPT_PTS_PER_USD/m.pts.out*C_GPT, rd:GPT_PTS_PER_USD/m.pts.rd*C_GPT, mix:GPT_PTS_PER_USD/mixOf(m.pts)*C_GPT})),
+    sol("Devin Max", 311*M/200, "--cog", false),
+  ];
+}
+const mb = n => n>=100?Math.round(n).toLocaleString("en-US"):n>=10?n.toFixed(1):n.toFixed(2);
+function mvPanel(R,key){
+  const sorted=[...R].sort((a,b)=>b[key]-a[key]), max=sorted[0][key];
+  return sorted.map(r=>`
+    <div class="mrow">
+      <span class="lbl"><span class="dot" style="background:var(${r.c})"></span>${r.name} <small>${r.via}${r.note?` · ${r.note}`:""}</small></span>
+      <span class="amt">${r.bound?"≤":""}${mb(r[key])}<small> MB</small></span>
+      <div class="track"><div class="bar${r.bound?" bound":""}" style="width:${r[key]/max*100}%;background-color:var(${r.c})"></div></div>
+    </div>`).join("");
+}
+let mvU=1;
+function renderModels(){
+  document.querySelectorAll("#mvUtil button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.u===mvU));
+  const R=mvRows().map(r=>({...r,out:r.out*mvU,rd:r.rd*mvU,mix:r.mix*mvU}));
+  $("#mvMix").innerHTML=mvPanel(R,"mix");
+  $("#mvOut").innerHTML=mvPanel(R,"out"); $("#mvIn").innerHTML=mvPanel(R,"rd");
+}
+$("#mvUtil").onclick=e=>{const b=e.target.closest("button"); if(!b) return; mvU=+b.dataset.u; renderModels();};
+$("#mvHaiku").onchange=renderModels;
+function showView(){
+  const v = location.hash==="#models"?"models":location.hash==="#games"?"games":"plans";
+  $("#v-plans").hidden = v!=="plans"; $("#v-models").hidden = v!=="models"; $("#v-games").hidden = v!=="games";
+  document.querySelectorAll(".tabs a").forEach(a=>{ if(a.dataset.v===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+}
+document.querySelector(".tabs").onclick=e=>{const a=e.target.closest("a"); if(!a) return; e.preventDefault(); try{history.replaceState(null,"","#"+a.dataset.v)}catch(_){location.hash=a.dataset.v} showView();};
+window.addEventListener("hashchange",showView);
+renderModels(); showView();
+
+/* ───────── In-plan value tab (#games). Reads MIX, mixOf, PTS, CLAUDE_LIST, CLAUDE_WRITE, KIRO_WRITE, withWrite, claudeMixX, GPT_ISO, GPT_PTS_PER_USD, KIRO, kiroX. ─────────
+   Basis for every vendor here: the standard agentic mix. value = quota per plan $ x list $ of the mix / quota of the mix.
+   GPT_ISO contract: any entry is shown; an entry with pts.out == null or prov:true is drawn as provisional.
+   If GPT_ISO has no Terra entry, G_TERRA_PROV below is used until the final rates land there. */
+// GPT-6.1 Terra, provisional (Nov 18, 2026): input bracket $6.70 of list per weekly point, cached bracket $6.53; output bracket still running.
+const G_TERRA_PROV = {name:"GPT-6.1 Terra", prov:true, list:{fresh:1,rd:0.05,out:5}, pts:{fresh:1/6.70, rd:0.05/6.53, out:null}};
+// Kiro published credit multipliers (not metered by us yet).
+const G_KIRO = {"opus-5.5":2.0, "sonnet-5.5":1.3, "haiku-short":0.06, "haiku-long":0.3};
+const G_CLAUDE_ROWS = [["opus-5.5","Claude Opus 5.5",""],["sonnet-5.5","Claude Sonnet 5.5",""],["haiku-short","Claude Haiku 5.5","prompts under 100K tokens"],["haiku-long","Claude Haiku 5.5","prompts over 100K tokens"]];
+
+function gVendors(){
+  const claude = G_CLAUDE_ROWS.map(([k,name,note])=>{
+    const p=PTS[k];
+    return {k,name,note,list:mixOf(withWrite(CLAUDE_LIST[k],CLAUDE_WRITE)),q:mixOf({rd:p.rd,fresh:p.wr,out:p.out}),x:claudeMixX(k)};
+  });
+  const iso = {...GPT_ISO};
+  if(!Object.keys(iso).some(k=>/terra/i.test(k))) iso["gpt-6.1-terra"]=G_TERRA_PROV;
+  const gpt = Object.entries(iso).map(([k,m])=>{
+    let pts=m.pts, prov=!!m.prov, note="";
+    if(pts.out==null){  // output not measured yet: assume it is charged at the same list $ per point as the measured input types
+      const part=o=>MIX.rd*o.rd+MIX.fresh*o.fresh;
+      pts={...pts,out:m.list.out*part(pts)/part(m.list)}; prov=true; note="output rate not measured yet";
+    } else if(prov) note="provisional rates";
+    const list=mixOf(m.list), q=mixOf(pts);
+    return {k,name:m.name,note,prov,list,q,x:GPT_PTS_PER_USD*list/q};
+  });
+  // Kiro: measured credits per Mtok when the shared KIRO constant carries them, else the published multipliers.
+  const kMeas = typeof KIRO!=="undefined" && KIRO["sonnet-5.5"] && KIRO["sonnet-5.5"].cr;
+  const kiro = kMeas
+    ? Object.entries(KIRO).map(([k,m])=>({k, name:(MODELS[k]||{name:k}).name, note:/haiku/.test(k)?"same value over 100K tokens; ratios are for prompts under 100K tokens":"",
+        list:mixOf(withWrite(m.list,KIRO_WRITE)), q:mixOf(m.cr), x:kiroX[k]}))
+    : G_CLAUDE_ROWS.map(([k,name,note])=>({k,name,note,list:CLAUDE_LIST[k].fresh,q:G_KIRO[k]}));
+  return [
+    {id:"claude", title:"Claude plans", c:"--anth", ref:"sonnet-5.5", unit:"Quota cost", src:"meas",
+     sub:"Metered on a Team Premium seat ($125/mo) in 5-hour quota points. Other Claude tiers are scaled by price and have the same multiples."+(CLAUDE_WRITE===2?"":` New input is valued at ${CLAUDE_WRITE}× the input price, set in Settings.`), rows:claude},
+    {id:"gpt", title:"ChatGPT plans", c:"--oai", ref:"gpt-6.2-sol", unit:"Quota cost", src:"meas",
+     sub:"Metered on ChatGPT Pro $200 in weekly quota points, one token type at a time. Other tiers are scaled by price.", rows:gpt},
+    kMeas
+    ? {id:"kiro", title:"Kiro plans", c:"--kiro", ref:"sonnet-5.5", unit:"Credit cost", src:"meas",
+       sub:"Metered in Kiro credits for each token type, at $0.02 per credit. New input is priced as a 5-minute cache write, 1.25× the input price.", rows:kiro}
+    : {id:"kiro", title:"Kiro plans", c:"--kiro", ref:"sonnet-5.5", unit:"Credit rate", src:"pub",
+       sub:"Kiro's published credit multipliers compared with list price ratios. These models are not metered on Kiro yet, so no dollar multiple is shown.", rows:kiro},
+  ].map(v=>{
+    const ref=v.rows.find(r=>r.k===v.ref);
+    v.rows.forEach(r=>{ r.isRef=r===ref; r.rl=r.list/ref.list; r.rq=r.q/ref.q; r.rv=r.rl/r.rq; });
+    const best=Math.max(...v.rows.map(r=>r.rv)), worst=Math.min(...v.rows.map(r=>r.rv));
+    const srt=v.rows.map(r=>r.rv).sort((a,b)=>a-b), med=srt.length%2?srt[(srt.length-1)/2]:(srt[srt.length/2-1]+srt[srt.length/2])/2;
+    v.rows.forEach(r=>{ r.best=r.rv===best; r.pen=r.rv<=med*0.9; });
+    v.refName=ref.name.replace("Claude ",""); v.bestRow=v.rows.find(r=>r.best); v.worstRow=v.rows.find(r=>r.rv===worst);
+    v.low=v.rows.filter(r=>r.rv<=worst*1.04);  // rows within 4% of the lowest: a tie at our measurement precision
+    return v;
+  });
+}
+const gRel = n => (n>=1?n.toFixed(2):n.toFixed(3))+"×";
+const gPct = n => { const p=Math.round((n-1)*100); return (p>0?"+":p<0?"−":"±")+Math.abs(p)+"%"; };
+const gAbs = n => Math.abs(Math.round((n-1)*100))+"%";
+const gShort = r => r.name.replace("Claude ","");
+const gFull = r => gShort(r)+(r.k==="haiku-long"?" over 100K":r.k==="haiku-short"?" under 100K":"");
+
+function gTake(v,V){
+  const by=k=>v.rows.find(r=>r.k===k);
+  const dir=r=>gAbs(r.rv)==="0%"?"the same":`${gAbs(r.rv)} ${r.rv>=1?"more":"less"}`;
+  if(v.id==="claude"){
+    const o=by("opus-5.5"), s=by("sonnet-5.5"), hs=by("haiku-short"), hl=by("haiku-long");
+    if(o.best && o.rv>=1.1){
+      const tie=Math.abs(hs.rv-1)<0.04 && Math.abs(hl.rv-1)<0.04;
+      return `Opus 5.5 returns the most API value per plan dollar. It lists at ${gRel(o.rl)} Sonnet's price and uses ${gRel(o.rq)} the quota, so a plan dollar buys ${gAbs(o.rv)} more on Opus than on Sonnet. `
+        + (tie?`Sonnet 5.5 and Haiku 5.5 are about equal: Haiku returns ${dir(hs)} than Sonnet on prompts under 100K tokens and ${dir(hl)} over. Our repeat measurements differ by 1–3%, so choose between those two on capability.`
+              :`Compared with Sonnet 5.5, Haiku 5.5 returns ${dir(hs)} on prompts under 100K tokens and ${dir(hl)} over.`)
+        + ` On prompts over 100K tokens Haiku's quota cost is ${(hl.q/hs.q).toFixed(1)}× higher and its list price is ${(hl.list/hs.list).toFixed(1)}× higher.`;
+    }
+  }
+  if(v.id==="gpt"){
+    const sol=by("gpt-6.2-sol"), as=by("gpt-6.2-astra"), t=v.rows.find(r=>/terra/i.test(r.k));
+    if(sol && as && t && t.rv<0.75){
+      return `GPT-6.2 Sol and Astra return about the same value: Astra lists at ${gRel(as.rl)} Sol's price and uses ${gRel(as.rq)} the quota. GPT-6.1 Terra lists at ${gRel(t.rl)} Sol's price and uses ${gRel(t.rq)} its quota, so a plan dollar buys ${gAbs(t.rv)} less API value on Terra than on Sol. Switching from Sol to Terra ${t.rq<1?`reduces quota use by ${gAbs(t.rq)}`:`does not reduce quota use`}.`
+        + (t.prov?` Terra's output rate is not measured yet. Its figure assumes output is charged like its input.`:"");
+    }
+  }
+  if(v.id==="kiro" && v.src==="meas"){
+    const o=by("opus-5.5"), s=by("sonnet-5.5"), h=v.rows.find(r=>/haiku/.test(r.k));
+    if(o && h && s===v.worstRow){
+      const kx=v.rows.map(r=>r.x), ox=V.filter(u=>u.id!=="kiro"&&u.src==="meas").flatMap(u=>u.rows.map(r=>r.x)), lowO=Math.min(...ox);
+      return `Sonnet 5.5 returns the least API value per plan dollar on Kiro. Opus 5.5 uses ${gRel(o.rq)} Sonnet's credits and lists at ${gRel(o.rl)} its price, so a plan dollar buys ${gAbs(o.rv)} more on Opus. Haiku 5.5 returns ${gAbs(h.rv)} more than Sonnet. Kiro bills a request over 100K tokens at 5× the credits, the same ratio as Haiku's list price, so Haiku's value is the same in both prompt-size tiers.`
+        + (Math.max(...kx)<lowO?` Kiro's multiples, ${Math.min(...kx).toFixed(1)}× to ${Math.max(...kx).toFixed(1)}×, are below the lowest Claude or ChatGPT multiple on this tab (${lowO.toFixed(1)}×), so the plan matters more than the model.`:"");
+    }
+  }
+  if(v.id==="kiro" && v.src==="pub"){
+    const o=by("opus-5.5"), hs=by("haiku-short");
+    return `Kiro's published rates give Sonnet 5.5 a ${G_KIRO["sonnet-5.5"]}× credit rate against a 1× list price. On those rates Opus 5.5 returns ${gAbs(o.rv)} more list value per credit than Sonnet and Haiku 5.5 ${gAbs(hs.rv)} more. This assumes the multiplier applies to every token type. These models are not metered on Kiro yet.`;
+  }
+  const b=v.bestRow, w=v.worstRow, spread=1-w.rv/b.rv;
+  return spread<0.05
+    ? `Every model in this plan returns within ${Math.round(spread*100)||1}% of the others per plan dollar.`
+    : `${gFull(b)} returns ${Math.round((b.rv/w.rv-1)*100)}% more API value per plan dollar than ${gFull(w)}, the lowest in the plan.`;
+}
+
+function renderGames(){
+  const V=gVendors(), dollar=V.filter(v=>v.src==="meas");
+  const tag=(r,v)=>(r.best&&v.worstRow.rv<r.rv*0.97?`<span class="tag g-best">Best value</span>`:"")+(r.pen?`<span class="tag g-pen">Below typical</span>`:"")
+    +(r.prov?`<span class="tag bound" title="Not all token types measured yet">Provisional</span>`:"");
+  $("#gLead").innerHTML = dollar.map(v=>{
+    const b=v.bestRow, w=v.worstRow, spread=1-w.rv/b.rv;
+    if(v.low.length>1 && spread>=0.1){
+      const names=[...new Set(v.low.map(gShort))], xs=v.low.map(r=>r.x), ls=v.low.map(r=>Math.round((1-r.rv/b.rv)*100));
+      const rng=(a,f)=>{const lo=f(Math.min(...a)), hi=f(Math.max(...a)); return lo===hi?lo:lo+"–"+hi;};
+      return `<div class="leader" style="--vc:var(${v.c})">
+      <span class="who"><span class="dot" style="background:var(${v.c})"></span>${v.title} · best value per plan dollar</span>
+      <span class="amt">${gFull(b)} <span class="xchip ${xcls(b.x)}">${b.x.toFixed(1)}×</span></span>
+      <span class="sub"><b>${names.join(" and ")}</b> return ${rng(xs,x=>x.toFixed(1))}×, ${rng(ls,String)}% less than ${gShort(b)}.</span>
+    </div>`;
+    }
+    return `<div class="leader" style="--vc:var(${v.c})">
+      <span class="who"><span class="dot" style="background:var(${v.c})"></span>${v.title} · lowest value per plan dollar${w.prov?` <span class="tag bound">Provisional</span>`:""}</span>
+      <span class="amt">${gFull(w)} <span class="xchip ${xcls(w.x)}">${w.x.toFixed(1)}×</span></span>
+      <span class="sub"><b>${gFull(b)}</b> returns ${b.x.toFixed(1)}× on the same plan${spread>=0.4?`. ${gShort(w)} returns ${Math.round(spread*100)}% less`:`, ${Math.round((b.rv/w.rv-1)*100)}% more`}.</span>
+    </div>`;}).join("");
+  $("#gBody").innerHTML = V.map(v=>{
+    const nb=v.src!=="meas", refX=nb?0:v.rows.find(r=>r.isRef).x, max=nb?1:Math.max(...v.rows.map(r=>r.x));  // bars scale within each vendor
+    return `<section class="g-vendor" aria-label="${v.title}">
+      <div class="g-vh"><div><h3><span class="dot" style="background:var(${v.c})"></span>${v.title}</h3><p>${v.sub}</p></div>
+        <span class="tags">${nb?`<span class="tag">Published rates</span>`:`<span class="tag meas">Measured</span>`}<span class="tag">Reference: ${v.refName}</span></span></div>
+      <div class="g-grid g-head${nb?" nobar":""}" aria-hidden="true"><span>Model</span><span class="g-rels"><span>List price</span><span>${v.unit}</span></span><span>${nb?`List value per credit, vs ${v.refName}`:"API value per plan dollar"}</span>${nb?"":`<span class="r">vs ref · Multiple</span>`}</div>
+      ${v.rows.map(r=>`<div class="g-grid g-row${nb?" nobar":""}">
+        <div class="plan"><span class="name"><span class="dot" style="background:var(${v.c})"></span>${r.name}</span>${r.note?`<span class="model">${r.note}</span>`:""}<span class="tags">${tag(r,v)}</span></div>
+        <div class="g-rels" title="Multiples of ${v.refName}"><span><small>List</small><b>${gRel(r.rl)}</b></span><span><small>${v.unit.split(" ")[0]}</small><b>${gRel(r.rq)}</b></span></div>
+        ${nb?`<div class="g-rv"><b>${r.isRef?"1.00×":r.rv.toFixed(2)+"×"}</b>${r.isRef?"reference":gPct(r.rv)+" vs "+v.refName}</div>`
+          :`<div class="track" role="img" aria-label="${r.name}${r.note?", "+r.note:""}: ${r.x.toFixed(1)} dollars of API value per plan dollar"><div class="bar${r.prov?" bound":""}" style="width:${r.x/max*100}%;background-color:var(${v.c})"></div>${r.isRef?"":`<div class="tick" style="left:${refX/max*100}%"></div>`}</div>
+        <div class="g-val"><span class="g-delta${r.isRef?" ref":""}">${r.isRef?"Reference":gPct(r.rv)}</span><span class="xchip ${xcls(r.x)}" title="${xtitle(r.x)}">${r.x.toFixed(1)}×</span></div>`}
+      </div>`).join("")}
+      <p class="g-take">${gTake(v,V)}</p>
+    </section>`;}).join("");
+  const t=V[1].rows.find(r=>/terra/i.test(r.k));
+  $("#gMethod").innerHTML = `<b>Claude</b> and <b>ChatGPT</b> rates were metered for each token type. `
+    + (t&&t.prov?`GPT-6.1 Terra's output rate is not measured yet. `:"")
+    + (V[2].src==="meas"?`<b>Kiro</b> credits were metered for Opus 5.5, Sonnet 5.5 and Haiku 5.5. `:`<b>Kiro</b> rows use published multipliers and are not measured. `)
+    + `Tiers other than the metered one are scaled by price.`;
+}
+renderGames();
+
+/* ───────── Settings: how Claude's new input is valued. Applies to Claude plans only. ───────── */
+const CW_TEXT = {
+  2:    {measure:"the 1-hour cache write Claude Code makes (2× input)", basis:"the 1-hour cache on Claude plans (2× the input price)"},
+  1.25: {measure:"a 5-minute cache write (1.25× input, set in Settings; Claude Code writes the 1-hour cache)", basis:"the 5-minute cache on Claude plans (1.25× the input price, set in Settings; Claude Code writes the 1-hour cache)"},
+  1:    {measure:"plain input (1× input, set in Settings; Claude Code writes the 1-hour cache)", basis:"ordinary input on Claude plans (1×, set in Settings; Claude Code writes the 1-hour cache)"},
+};
+function setClaudeWrite(a, save){
+  if(!CW_TEXT[a]) a=2;
+  CLAUDE_WRITE=a; Object.assign(claudeX, claudeXNow());
+  document.querySelectorAll("[data-cw]").forEach(e=>{e.textContent=CW_TEXT[a][e.dataset.cw];});
+  document.querySelectorAll('input[name="cw"]').forEach(i=>{i.checked=+i.value===a;});
+  const btn=$("#cfgBtn"), note=$("#cfgNote"), off=a!==2;
+  btn.classList.toggle("changed",off); note.hidden=!off; note.textContent=off?`Claude new input at ${a}×`:"";
+  btn.setAttribute("aria-label", off?`Settings. Claude cache-write value is ${a}× input, not the default`:"Settings");
+  if(save){ try{ localStorage.setItem("pvb.claudeWrite", String(a)); }catch(_){} }
+  render(); renderGames();
+}
+function cfgOpen(open){
+  $("#cfgPop").hidden=!open; $("#cfgBtn").setAttribute("aria-expanded", String(open));
+  if(open){ const c=document.querySelector('input[name="cw"]:checked'); if(c) c.focus(); }
+}
+$("#cfgBtn").onclick=()=>cfgOpen($("#cfgPop").hidden);
+$("#cfgPop").onchange=e=>{ if(e.target.name==="cw") setClaudeWrite(+e.target.value, true); };
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("#cfgPop").hidden){ cfgOpen(false); $("#cfgBtn").focus(); } });
+document.addEventListener("click",e=>{ if(!$("#cfgPop").hidden && !e.target.closest("#cfg")) cfgOpen(false); });
+{ let a=2; try{ a=+localStorage.getItem("pvb.claudeWrite")||2; }catch(_){} setClaudeWrite(a, false); }
+</script>
+</body>
+</html>
