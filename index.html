@@ -15,7 +15,6 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: CapNexus brand. Navy masthead with the leaders overlapping its lower edge, then one white leaderboard sheet on light gray. */
 :root{
   --bg:#f3f5f7; --surface:#ffffff; --surface-2:#f8fafc; --fg:#1d2733; --muted:#5f6b78; --faint:#8a96a3; --rule:#e3e8ee;
   --navy:#0c2841; --navy-2:#123659; --on-navy:#ffffff; --on-navy-muted:#b9c8d8;
@@ -46,7 +45,6 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--display);fo
 .eyebrow{font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-/* Masthead */
 .mast{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--on-navy)}
 .mast .inner{padding-block:28px 96px;display:grid;gap:14px}
 .mast .eyebrow{color:var(--green)}
@@ -54,7 +52,6 @@ h1{font-size:clamp(30px,5vw,48px);font-weight:300;letter-spacing:-.015em;line-he
 h1 strong{font-weight:700}
 .lede{color:var(--on-navy-muted);max-width:60ch;margin:0;font-size:16px}
 
-/* Leaders strip, overlapping the masthead */
 .leaders{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:-64px}
 .leader{background:var(--surface);border-radius:8px;box-shadow:var(--shadow);padding:16px 18px;display:grid;gap:4px;border-top:3px solid var(--vc)}
 .leader .who{font:500 12px var(--display);color:var(--muted);display:flex;align-items:center;gap:7px}
@@ -63,7 +60,6 @@ h1 strong{font-weight:700}
 .leader .sub{font-size:13px;color:var(--muted)}
 .leader .sub b{color:var(--fg);font-weight:500}
 
-/* Board */
 main{padding-block:28px 0}
 .sheet{background:var(--surface);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
 .toolbar{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:end;padding:18px 22px;border-bottom:1px solid var(--rule);background:var(--surface-2)}
@@ -115,7 +111,6 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .lg-hatch{width:22px;height:10px;border-radius:5px;background:var(--oai) repeating-linear-gradient(135deg,transparent 0 4px,color-mix(in srgb,var(--surface) 70%,transparent) 4px 6px)}
 .empty{padding:48px 22px;text-align:center;color:var(--muted)}
 
-/* Promo */
 .promo{margin-top:28px;border-radius:8px;background:linear-gradient(120deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--on-navy);padding:26px 28px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 32px;align-items:center;position:relative;overflow:hidden}
 .promo::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:28px solid color-mix(in srgb,var(--green) 18%,transparent);pointer-events:none}
 .promo .eyebrow{color:var(--green);display:flex;align-items:center;gap:10px}
@@ -134,13 +129,11 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .promo>*{min-width:0;position:relative;z-index:1}
 @media (max-width:700px){.promo{grid-template-columns:minmax(0,1fr);padding:22px 18px}.promo::after{right:-90px;top:-90px}.gh{font-size:12px;gap:8px;padding:9px 11px 9px 10px}.stack{display:flex;flex-wrap:wrap;justify-content:start}}
 
-/* View tabs */
 .tabs{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
 .tabs a{font:500 14px var(--display);color:var(--on-navy-muted);text-decoration:none;padding:8px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.14)}
 .tabs a[aria-current="page"]{background:var(--on-navy);color:#0c2841;border-color:var(--on-navy)}
 .tabs a:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 
-/* Settings cog */
 .tabbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .tabbar .tabs{margin-top:0}
 .cfg{position:relative;margin-left:auto;z-index:20}
@@ -170,7 +163,6 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .cfg-pop input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .cfg-pop p{margin:0;padding-top:10px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.5;color:var(--muted)}
 
-/* Model throughput view */
 .mv-sheet{margin-top:-64px}
 .mv-intro{padding:20px 22px;border-bottom:1px solid var(--rule);display:grid;gap:6px}
 .mv-intro h2{font:700 20px/1.25 var(--display);margin:0;letter-spacing:-.01em}
@@ -195,7 +187,6 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 #mvOw button{flex:1 1 0}
 @media (max-width:760px){.panels{grid-template-columns:1fr}.panel+.panel{border-left:0;border-top:1px solid var(--rule)}}
 
-/* In-plan value view */
 .g-sheet{margin-top:28px}
 .g-vendor{border-bottom:1px solid var(--rule)}
 .g-vh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:18px 22px 14px;background:var(--surface-2);border-bottom:1px solid var(--rule)}
@@ -234,7 +225,6 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
   #gLead .leader .amt{font-size:22px}
 }
 
-/* Method */
 .method{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-block:40px 24px}
 .method h2{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
 .method p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6}
@@ -256,14 +246,14 @@ footer .inner{border-top:1px solid var(--rule);padding-block:18px 40px;font-size
   select{min-width:0;width:100%}.ctl{flex:1 1 140px}
 }
 @media (prefers-reduced-motion:reduce){.bar,.row{transition:none}}
-/* Phone: labels get their own line instead of truncating */
+
 @media (max-width:560px){
   .mrow .lbl{flex-wrap:wrap;row-gap:1px}
   .mrow .lbl small{flex:1 0 100%;padding-left:16px}
   .row .plan .name{white-space:normal;overflow:visible;align-items:baseline}
 }
 @media (max-width:350px){.gh{font-size:10.5px;gap:6px;padding-inline:8px}}
-/* Phone: a changed setting shows as a dot on the gear, not a text label that widens the row */
+
 @media (max-width:560px){
   .cfg{flex:none}.cfg-btn{position:relative}
   .cfg-note{position:absolute;top:-4px;right:-4px;font-size:0;gap:0}
@@ -419,39 +409,32 @@ const MODELS = {
   "gpt-6.2-astra":{lab:"openai",  name:"GPT-6.2 Astra"},
   "gpt-6.2-sol":{lab:"openai",    name:"GPT-6.2 Sol"},
   "gpt-6.1-terra":{lab:"openai",  name:"GPT-6.1 Terra"},
-  "gpt-6.1-sol":{lab:"openai",    name:"GPT-6.1 Sol"},  // Devin Max only; no longer listed on ChatGPT plans (legacy)
+  "gpt-6.1-sol":{lab:"openai",    name:"GPT-6.1 Sol"},
 };
-// Standard agentic coding blend, by share of text: our measured Codex week (Nov 3-5, 2026; 17,901 GPT-6.1 Sol requests).
-// Fresh input is billed as a cache write on Claude.
+
 const MIX = {rd:0.9528, fresh:0.0443, out:0.00294};
 const mixOf = o => MIX.rd*o.rd+MIX.fresh*o.fresh+MIX.out*o.out;
-// Value multiple (list $ per plan $) at 100% use, from the measured plan in each family.
-// Claude: measured on a Team Premium seat (6.25x Pro, $125/mo monthly); every tier is $20 per 1x Pro of weekly usage.
-// Value multiple on the standard agentic mix. 5h points per plan $ (850 weekly-equivalent points x 52/12 / $125) and points per Mtok
-// by token type (wr = cache write, how Claude Code bills new input). New input is valued at the list price of the cache
-// product actually delivered: Claude Code writes the 1-hour cache (2x input); Kiro's cache lives about 5 minutes (1.25x input).
+
 const PTS_PER_USD = 850*M/125, KIRO_WRITE = 1.25;
-let CLAUDE_WRITE = 2;  // reader-selectable in Settings (2, 1.25 or 1); setClaudeWrite() recomputes claudeX in place
+let CLAUDE_WRITE = 2;
 const PTS = {"opus-5.5":{out:23.24,rd:0.119,wr:5.92}, "sonnet-5.5":{out:15.89,rd:0.0805,wr:4.01}, "haiku-long":{out:5.39,rd:0.0270,wr:1.38}, "haiku-short":{out:1.068,rd:0.00544,wr:0.268}};
 const CLAUDE_LIST = {"opus-5.5":{rd:0.20,fresh:4,out:20}, "sonnet-5.5":{rd:0.10,fresh:2,out:10}, "haiku-long":{rd:0.05,fresh:0.50,out:2.50}, "haiku-short":{rd:0.01,fresh:0.10,out:0.50}};
 const withWrite = (l,a) => ({...l, fresh:l.fresh*a});
 const claudeMixX = k => PTS_PER_USD*mixOf(withWrite(CLAUDE_LIST[k],CLAUDE_WRITE))/mixOf({rd:PTS[k].rd, fresh:PTS[k].wr, out:PTS[k].out});
-// Haiku's plan row uses the over-100K tier, the typical agent prompt size.
+
 const claudeXNow = () => ({"opus-5.5":claudeMixX("opus-5.5"), "sonnet-5.5":claudeMixX("sonnet-5.5"), "haiku-5.5":claudeMixX("haiku-long")});
-const claudeX = claudeXNow();  // PLANS rows hold this object; mutate it, never reassign
-// GPT-6.2 on ChatGPT Pro: weekly points per Mtok by token type, from isolated tick brackets (Nov 18, 2026;
-// one weekly point per bracket, no other Codex activity). list = $/Mtok. The weekly meter is 100 points.
+const claudeX = claudeXNow();
+
 const GPT_ISO = {
   "gpt-6.2-sol":  {name:"GPT-6.2 Sol",   pts:{fresh:0.1545, rd:0.00792, out:0.7337}, list:{fresh:2, rd:0.10, out:10}},
   "gpt-6.2-astra":{name:"GPT-6.2 Astra", pts:{fresh:0.6488, rd:0.0315, out:2.9112}, list:{fresh:8, rd:0.40, out:40}},
   "gpt-6.1-terra":{name:"GPT-6.1 Terra", pts:{fresh:0.1491, rd:0.00769, out:0.6970}, list:{fresh:1, rd:0.05, out:5}},
 };
 const GPT_PTS_PER_USD = 100*M/200;
-// Value multiple on the standard agentic mix: points per plan $ x list $ of the mix / points of the mix.
+
 const gptX = Object.fromEntries(Object.entries(GPT_ISO).map(([k,m])=>[k, GPT_PTS_PER_USD*mixOf(m.list)/mixOf(m.pts)]));
 const oaiX = gptX;
-// Kiro (kiro-cli 3.3.0, Nov 18, 2026): credits per Mtok for carried context / fresh input / output, at $0.02 per credit,
-// valued on the standard agentic mix at list (Opus 5.5 $4/$0.20/$20, Sonnet 5.5 $2/$0.10/$10, Haiku 5.5 $0.10/$0.01/$0.50).
+
 const KIRO = {
   "opus-5.5":  {cr:{rd:3.3167,  fresh:33.168, out:220.90}, list:{rd:0.20, fresh:4,    out:20}},
   "sonnet-5.5":{cr:{rd:2.1559,  fresh:21.559, out:143.58}, list:{rd:0.10, fresh:2,    out:10}},
@@ -464,7 +447,7 @@ const PLANS = [
   {v:"Anthropic", c:"--anth", plan:"Claude Max",           price:100, x:claudeX, src:"lin"},
   {v:"Anthropic", c:"--anth", plan:"Claude Team Standard", price:25,  x:claudeX, src:"lin"},
   {v:"Anthropic", c:"--anth", plan:"Claude Pro",           price:20,  x:claudeX, src:"lin"},
-  // ChatGPT Pro is sold at $100, $200 and $500; the $200 tier was metered. $500 is scaled by price (allowance not published).
+
   {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Pro $500",     price:500, x:oaiX, src:"lin"},
   {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Pro $200",     price:200, x:oaiX, src:"meas"},
   {v:"OpenAI",    c:"--oai",  plan:"ChatGPT Plus",         price:20,  x:oaiX, src:"lin"},
@@ -478,7 +461,7 @@ const S = {lab:"best", model:null, util:1};
 const $ = s=>document.querySelector(s);
 const usd = n=> "$"+Math.round(n).toLocaleString("en-US");
 const pre = r => r.bound?"≤":"";
-// Multiple tiers: 20x and up, 10-20x, under 10x.
+
 const xcls = x => x>=20?"x-hi":x>=10?"x-mid":"x-lo";
 const xtitle = x => x>=20?"20× or more of price":x>=10?"10–20× of price":"Under 10× of price";
 const dot = r => `<span class="dot" style="background:var(${r.c})"></span>`;
@@ -533,14 +516,9 @@ $("#lab").onchange=e=>{S.lab=e.target.value; fillModels(); render();};
 $("#model").onchange=e=>{S.model=e.target.value; render();};
 fillModels(); render();
 
-// Model throughput: MB of agent text per $ of plan price, at 100% use.
-// Claude: 5h points per $ on Team Premium (850 weekly-equivalent points x 52/12 / $125), / points per Mtok, x chars per token.
-const C_CLAUDE = 3.51/1.50, C_GPT = 3.51;  // Claude 5.5 uses 1.50x the tokens of o200k_base on agent transcripts (nine 285K-char slices, Nov 18, 2026; range 1.40-1.59)
-const SOL = {out:10, rd:0.10, fresh:2}; // list $/Mtok
-// Open-weight models at each developer's own API list price, $/Mtok (Nov 18, 2026). Not metered: MB per $1 of API spend.
-// Kimi: platform.kimi.ai. Qwen: Alibaba Model Studio, Singapore; implicit cache hit. GLM: docs.z.ai. DeepSeek: api-docs.deepseek.com, peak rate
-// (off-peak is half). Mistral: direct API price from Oct 29, 2026. MiMo: mimo.mi.com lists CNY 3.00 / 0.025 / 6.00; USD as Xiaomi's overseas rate. No measured tokenizer ratio yet, so
-// chars per token is assumed equal to o200k_base.
+const C_CLAUDE = 3.51/1.50, C_GPT = 3.51;
+const SOL = {out:10, rd:0.10, fresh:2};
+
 const C_OW = C_GPT;
 const OW = [
   {name:"Kimi K3.1 Pro",       fresh:2.00,  rd:0.20,   out:10.00},
@@ -591,7 +569,7 @@ function renderModels(){
 $("#mvUtil").onclick=e=>{const b=e.target.closest("button"); if(!b) return; mvU=+b.dataset.u; renderModels();};
 $("#mvHaiku").onchange=renderModels;
 $("#mvOw").onclick=e=>{const b=e.target.closest("button"); if(!b) return; mvOw=b.dataset.o==="1"; renderModels();};
-// Masthead headline for each tab. The plans one is also the static markup.
+
 const HEADLINES = {
   plans:  "What your coding plan is <strong>worth at API prices</strong>",
   models: "How far a plan dollar goes, <strong>model by model</strong>",
@@ -607,13 +585,8 @@ document.querySelector(".tabs").onclick=e=>{const a=e.target.closest("a"); if(!a
 window.addEventListener("hashchange",showView);
 renderModels(); showView();
 
-/* ───────── In-plan value tab (#games). Reads MIX, mixOf, PTS, CLAUDE_LIST, CLAUDE_WRITE, KIRO_WRITE, withWrite, claudeMixX, GPT_ISO, GPT_PTS_PER_USD, KIRO, kiroX. ─────────
-   Basis for every vendor here: the standard agentic mix. value = quota per plan $ x list $ of the mix / quota of the mix.
-   GPT_ISO contract: any entry is shown; an entry with pts.out == null or prov:true is drawn as provisional.
-   If GPT_ISO has no Terra entry, G_TERRA_PROV below is used until the final rates land there. */
-// GPT-6.1 Terra, provisional (Nov 18, 2026): input bracket $6.70 of list per weekly point, cached bracket $6.53; output bracket still running.
 const G_TERRA_PROV = {name:"GPT-6.1 Terra", prov:true, list:{fresh:1,rd:0.05,out:5}, pts:{fresh:1/6.70, rd:0.05/6.53, out:null}};
-// Kiro published credit multipliers (not metered by us yet).
+
 const G_KIRO = {"opus-5.5":2.0, "sonnet-5.5":1.3, "haiku-short":0.06, "haiku-long":0.3};
 const G_CLAUDE_ROWS = [["opus-5.5","Claude Opus 5.5",""],["sonnet-5.5","Claude Sonnet 5.5",""],["haiku-short","Claude Haiku 5.5","prompts under 100K tokens"],["haiku-long","Claude Haiku 5.5","prompts over 100K tokens"]];
 
@@ -626,14 +599,14 @@ function gVendors(){
   if(!Object.keys(iso).some(k=>/terra/i.test(k))) iso["gpt-6.1-terra"]=G_TERRA_PROV;
   const gpt = Object.entries(iso).map(([k,m])=>{
     let pts=m.pts, prov=!!m.prov, note="";
-    if(pts.out==null){  // output not measured yet: assume it is charged at the same list $ per point as the measured input types
+    if(pts.out==null){
       const part=o=>MIX.rd*o.rd+MIX.fresh*o.fresh;
       pts={...pts,out:m.list.out*part(pts)/part(m.list)}; prov=true; note="output rate not measured yet";
     } else if(prov) note="provisional rates";
     const list=mixOf(m.list), q=mixOf(pts);
     return {k,name:m.name,note,prov,list,q,x:GPT_PTS_PER_USD*list/q};
   });
-  // Kiro: measured credits per Mtok when the shared KIRO constant carries them, else the published multipliers.
+
   const kMeas = typeof KIRO!=="undefined" && KIRO["sonnet-5.5"] && KIRO["sonnet-5.5"].cr;
   const kiro = kMeas
     ? Object.entries(KIRO).map(([k,m])=>({k, name:(MODELS[k]||{name:k}).name, note:/haiku/.test(k)?"same value over 100K tokens; ratios are for prompts under 100K tokens":"",
@@ -656,7 +629,7 @@ function gVendors(){
     const srt=v.rows.map(r=>r.rv).sort((a,b)=>a-b), med=srt.length%2?srt[(srt.length-1)/2]:(srt[srt.length/2-1]+srt[srt.length/2])/2;
     v.rows.forEach(r=>{ r.best=r.rv===best; r.pen=r.rv<=med*0.9; });
     v.refName=ref.name.replace("Claude ",""); v.bestRow=v.rows.find(r=>r.best); v.worstRow=v.rows.find(r=>r.rv===worst);
-    v.low=v.rows.filter(r=>r.rv<=worst*1.04);  // rows within 4% of the lowest: a tie at our measurement precision
+    v.low=v.rows.filter(r=>r.rv<=worst*1.04);
     return v;
   });
 }
@@ -725,7 +698,7 @@ function renderGames(){
       <span class="sub"><b>${gFull(b)}</b> returns ${b.x.toFixed(1)}× on the same plan${spread>=0.4?`. ${gShort(w)} returns ${Math.round(spread*100)}% less`:`, ${Math.round((b.rv/w.rv-1)*100)}% more`}.</span>
     </div>`;}).join("");
   $("#gBody").innerHTML = V.map(v=>{
-    const nb=v.src!=="meas", refX=nb?0:v.rows.find(r=>r.isRef).x, max=nb?1:Math.max(...v.rows.map(r=>r.x));  // bars scale within each vendor
+    const nb=v.src!=="meas", refX=nb?0:v.rows.find(r=>r.isRef).x, max=nb?1:Math.max(...v.rows.map(r=>r.x));
     return `<section class="g-vendor" aria-label="${v.title}">
       <div class="g-vh"><div><h3><span class="dot" style="background:var(${v.c})"></span>${v.title}</h3><p>${v.sub}</p></div>
         <span class="tags">${nb?`<span class="tag">Published rates</span>`:`<span class="tag meas">Measured</span>`}<span class="tag">Reference: ${v.refName}</span></span></div>
@@ -747,7 +720,6 @@ function renderGames(){
 }
 renderGames();
 
-/* ───────── Settings: how Claude's new input is valued. Applies to Claude plans only. ───────── */
 const CW_TEXT = {
   2:    {measure:"the 1-hour cache write Claude Code makes (2× input)", basis:"the 1-hour cache on Claude plans (2× the input price)"},
   1.25: {measure:"a 5-minute cache write (1.25× input, set in Settings; Claude Code writes the 1-hour cache)", basis:"the 5-minute cache on Claude plans (1.25× the input price, set in Settings; Claude Code writes the 1-hour cache)"},
